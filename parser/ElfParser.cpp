@@ -1,7 +1,4 @@
-
-
 #include <iostream>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -51,46 +48,21 @@ void parseSymtab(void *elfFile)
     for (size_t i = 0; i < countSymtabItems; i++)
     {
         auto symtabItem = (Elf64_Sym *)(elfFile + symtab->sh_offset) + i;
-        std::cout<<i<<" ";
+        std::cout << i << " ";
         switch (symtabItem->st_info)
         {
         case STT_FUNC:
-            std::cout<< "FUNC " << &strtab[symtabItem->st_name];
+            std::cout << "FUNC " << &strtab[symtabItem->st_name];
             break;
         case STT_OBJECT:
-            std::cout<< "OBJECT " << &strtab[symtabItem->st_name];
+            std::cout << "OBJECT " << &strtab[symtabItem->st_name];
             break;
         case STT_FILE:
-            std::cout<< "FILE " << &strtab[symtabItem->st_name];
+            std::cout << "FILE " << &strtab[symtabItem->st_name];
             break;
         default:
-          std::cout<< "ANY " << &strtab[symtabItem->st_name];      
+            std::cout << "ANY " << &strtab[symtabItem->st_name];
         }
-        std::cout<<std::endl;
+        std::cout << std::endl;
     }
-}
-
-using namespace std;
-
-int main(int argc, char const *argv[])
-{
-    char* name = "Roma Zelenin";
-    void *elf_file = readFile("./main.o");
-
-    auto elfHeader = static_cast<Elf64_Ehdr *>(elf_file);
-
-    auto sectionHeader = static_cast<Elf64_Shdr *>(elf_file + elfHeader->e_shoff);
-    char *shstr = static_cast<char *>(elf_file + (sectionHeader + elfHeader->e_shstrndx)->sh_offset);
-    char *text = static_cast<char *>(elf_file + findSection(elf_file, ".text")->sh_offset);
-
-
-    auto rodata = findSection(elf_file, ".rodata");
-    for (size_t i = 0; i < rodata->sh_size; i++)
-    {
-        cout<<((char*)elf_file+rodata->sh_offset)[i];
-    }
-    
-    //parseSymtab(elf_file);
-
-    return 0;
 }
